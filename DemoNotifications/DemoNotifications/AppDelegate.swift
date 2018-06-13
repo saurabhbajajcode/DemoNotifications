@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +17,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        // register for notifications
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.badge, .sound, .alert]) { (authorized, error) in
+            if let error = error {
+                print(error.localizedDescription)
+            } else {
+                print("***** Authorized Notifiactions *****")
+            }
+        }
+        
+        // setup notification actions and categories
+        setupCategoriesAndActions()
+        
         return true
     }
 
@@ -41,6 +56,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-
+    
+    // MARK: helpers
+    func setupCategoriesAndActions() {
+        // actions
+        let remindLaterAction = UNNotificationAction(identifier: "remindMeLater", title: "Remind me later", options: UNNotificationActionOptions(rawValue: 0))
+        let acceptAction = UNNotificationAction(identifier: "accept", title: "Accept", options: .foreground)
+        let declineAction = UNNotificationAction(identifier: "decline", title: "Decline", options: .destructive)
+        let commentAction = UNTextInputNotificationAction(identifier: "comment", title: "Comment", options: .authenticationRequired, textInputButtonTitle: "Send", textInputPlaceholder: "Enter text")
+        
+        // categories
+        let invitationCategory = UNNotificationCategory(identifier: "invitation", actions: [remindLaterAction, acceptAction, declineAction, commentAction], intentIdentifiers: [], options: UNNotificationCategoryOptions(rawValue: 0))
+        
+        // register categories
+        UNUserNotificationCenter.current().setNotificationCategories([invitationCategory])
+    }
 }
 
