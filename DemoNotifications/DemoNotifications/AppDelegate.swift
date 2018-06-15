@@ -10,7 +10,7 @@ import UIKit
 import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
 
@@ -27,6 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 print("***** Authorized Notifiactions *****")
             }
         }
+        center.delegate = self
         
         // setup notification actions and categories
         setupCategoriesAndActions()
@@ -56,6 +57,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
+    
+    // MARK: UNUserNotificationCenterDelegate methods
+    // here we can decide whether to show notification or silence it
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        
+        /* execute the provided completion handler block with the presentaion option we want the system to use.
+         * if presentation options are not provided then system will silence the notification.
+         */
+        completionHandler([.alert, .sound])
+    }
+    
     
     // MARK: helpers
     func setupCategoriesAndActions() {
