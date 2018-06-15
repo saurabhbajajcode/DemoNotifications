@@ -68,6 +68,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         completionHandler([.alert, .sound])
     }
     
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        switch response.notification.request.content.categoryIdentifier {
+        case "GENERAL":
+            break
+        case "INVITATION":
+            switch response.actionIdentifier {
+            case "remindMeLater":
+                print("remindMeLater")
+            case "accept":
+                print("accept")
+            case "decline":
+                print("decline")
+            case "comment":
+                print("comment")
+            default : break
+            }
+        default:
+            break
+        }
+        completionHandler()
+    }
+    
     
     // MARK: helpers
     func setupCategoriesAndActions() {
